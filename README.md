@@ -59,7 +59,7 @@ sudo apt install build-essential cmake extra-cmake-modules kwin-dev
 
 Ubuntu 24.04 LTS does not provide the required KWin 6.3 and KDE Frameworks 6 stack.
 
-## Install KDE Scroll Fix
+## Installation
 
 ### Build and test the project
 
