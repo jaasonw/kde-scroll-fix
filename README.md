@@ -45,18 +45,11 @@ sudo pacman -S --needed base-devel cmake extra-cmake-modules kwin
 sudo dnf install gcc-c++ make cmake extra-cmake-modules kwin-devel
 ```
 
-#### Debian 13+
+#### Debian 13+ / Ubuntu 25.04+
 
 ```sh
 sudo apt install build-essential cmake extra-cmake-modules kwin-dev
 ```
-
-#### Ubuntu 25.04+
-
-```sh
-sudo apt install build-essential cmake extra-cmake-modules kwin-dev
-```
-
 Ubuntu 24.04 LTS does not provide the required KWin 6.3 and KDE Frameworks 6 stack.
 
 ## Installation
