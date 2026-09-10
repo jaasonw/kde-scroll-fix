@@ -24,6 +24,6 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
-      - run: pacman -Syu --noconfirm base-devel cmake extra-cmake-modules kwin clang
+      - run: pacman -Syu --noconfirm base-devel cmake extra-cmake-modules kwin qt6-base qt6-declarative clang
       - run: cmake -S . -B build-tidy -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
       - run: cmake --build build-tidy --target tidy
