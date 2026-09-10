@@ -1,0 +1,3 @@
+Checks: 'cppcoreguidelines-*,-cppcoreguidelines-owning-memory'
+WarningsAsErrors: '*'
+HeaderFilterRegex: '(^|.*/)(src|tests)/.*'

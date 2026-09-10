@@ -22,26 +22,35 @@
 
 namespace {
 const QString pluginId = QStringLiteral("scrollfix");
+constexpr int kWindowWidth = 480;
+constexpr int kWindowHeight = 420;
+constexpr int kMinimumScrollPercent = 5;
+constexpr int kMaximumScrollPercent = 100;
+constexpr int kWindowQueryTimeoutMs = 120000;
+constexpr int kPluginTimeoutMs = 3000;
 
 class SettingsWindow final : public QWidget {
  public:
-  SettingsWindow() {
+  SettingsWindow()
+      : m_speed(new QSlider(Qt::Horizontal)),
+        m_percentage(new QLabel),
+        m_apps(new QListWidget),
+        m_status(new QLabel(tr("Apply saves settings and enables the installed "
+                               "plugin for this session."))) {
     setWindowTitle(tr("Touchpad Scroll Settings"));
-    resize(480, 420);
+    resize(kWindowWidth, kWindowHeight);
     auto* layout = new QVBoxLayout(this);
     auto* intro = new QLabel(
         tr("One scroll speed for all listed apps. Other apps stay unchanged."));
     intro->setWordWrap(true);
     layout->addWidget(intro);
 
-    m_speed = new QSlider(Qt::Horizontal);
-    m_speed->setRange(5, 100);
+    m_speed->setRange(kMinimumScrollPercent, kMaximumScrollPercent);
     m_speed->setAccessibleName(tr("Scroll speed percentage"));
     auto* speedLabel = new QLabel(tr("&Scroll speed:"));
     speedLabel->setBuddy(m_speed);
     layout->addWidget(speedLabel);
     layout->addWidget(m_speed);
-    m_percentage = new QLabel;
     m_percentage->setTextFormat(Qt::PlainText);
     layout->addWidget(m_percentage);
     connect(m_speed, &QSlider::valueChanged, this, [this](int value) {
@@ -49,7 +58,6 @@ class SettingsWindow final : public QWidget {
           tr("%1% of KDE scroll speed (100% = unchanged)").arg(value));
     });
 
-    m_apps = new QListWidget;
     m_apps->setAccessibleName(tr("Application IDs"));
     layout->addWidget(m_apps);
     auto* buttons = new QHBoxLayout;
@@ -76,9 +84,6 @@ class SettingsWindow final : public QWidget {
     connect(remove, &QPushButton::clicked, this,
             [this] { delete m_apps->takeItem(m_apps->currentRow()); });
 
-    m_status =
-        new QLabel(tr("Apply saves settings and enables the installed plugin "
-                      "for this session."));
     // App IDs and D-Bus errors land here; QLabel would auto-detect them as rich
     // text.
     m_status->setTextFormat(Qt::PlainText);
@@ -108,9 +113,10 @@ class SettingsWindow final : public QWidget {
     for (const auto& id : ids) {
       addApp(id);
     }
-    const auto factor = config.readEntry("Factor", 1.0);
-    m_speed->setValue(ScrollFix::validFactor(factor) ? qRound(factor * 100)
-                                                     : 100);
+    const auto factor = config.readEntry("Factor", ScrollFix::kNoChangeFactor);
+    m_speed->setValue(ScrollFix::validFactor(factor)
+                          ? qRound(factor * kMaximumScrollPercent)
+                          : kMaximumScrollPercent);
   }
 
  private:
@@ -128,7 +134,7 @@ class SettingsWindow final : public QWidget {
     QDBusInterface kwin(QStringLiteral("org.kde.KWin"), QStringLiteral("/KWin"),
                         QStringLiteral("org.kde.KWin"),
                         QDBusConnection::sessionBus());
-    kwin.setTimeout(120000);
+    kwin.setTimeout(kWindowQueryTimeoutMs);
     auto* watcher = new QDBusPendingCallWatcher(
         kwin.asyncCall(QStringLiteral("queryWindowInfo")), this);
     connect(
@@ -162,7 +168,7 @@ class SettingsWindow final : public QWidget {
     QDBusInterface plugins(
         QStringLiteral("org.kde.KWin"), QStringLiteral("/Plugins"),
         QStringLiteral("org.kde.KWin.Plugins"), QDBusConnection::sessionBus());
-    plugins.setTimeout(3000);
+    plugins.setTimeout(kPluginTimeoutMs);
     return plugins.property("LoadedPlugins").toStringList().contains(pluginId);
   }
 
@@ -170,7 +176,7 @@ class SettingsWindow final : public QWidget {
     QDBusInterface plugins(
         QStringLiteral("org.kde.KWin"), QStringLiteral("/Plugins"),
         QStringLiteral("org.kde.KWin.Plugins"), QDBusConnection::sessionBus());
-    plugins.setTimeout(3000);
+    plugins.setTimeout(kPluginTimeoutMs);
     const QDBusReply<void> reply =
         plugins.call(QStringLiteral("UnloadPlugin"), pluginId);
     if (!reply.isValid()) {
@@ -188,7 +194,8 @@ class SettingsWindow final : public QWidget {
     auto config = KSharedConfig::openConfig(QStringLiteral("scrollfixrc"));
     config->reparseConfiguration();
     KConfigGroup group(config, QStringLiteral("Scroll"));
-    group.writeEntry("Factor", m_speed->value() / 100.0);
+    group.writeEntry("Factor", m_speed->value() /
+                                   static_cast<double>(kMaximumScrollPercent));
     group.writeEntry("Applications", ids);
     if (!config->sync()) {
       QMessageBox::warning(
@@ -202,7 +209,7 @@ class SettingsWindow final : public QWidget {
     QDBusInterface plugins(
         QStringLiteral("org.kde.KWin"), QStringLiteral("/Plugins"),
         QStringLiteral("org.kde.KWin.Plugins"), QDBusConnection::sessionBus());
-    plugins.setTimeout(3000);
+    plugins.setTimeout(kPluginTimeoutMs);
     const QDBusReply<bool> reply =
         plugins.call(QStringLiteral("LoadPlugin"), pluginId);
     if (!reply.isValid() || !reply.value()) {
