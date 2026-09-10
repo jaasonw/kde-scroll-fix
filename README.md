@@ -2,19 +2,28 @@
 
 ## Fix touchpad scrolling in Chromium-based apps
 
-
 Reduces touchpad scroll speed in Chromium-based applications on KDE Plasma with Wayland.
 
 Chromium, Brave, Chrome, Discord, VS Code, and other Electron applications have had a known issue for YEARS that
 caused trackpads to scroll faster than the native app setting. I have no interest in waiting for Chromium/Linux/Wayland/etc devs to keep fighting turf wars about whos problem it is to fix what or whiney opinioned users who will tell me their wife's boyfriend says turbo scrolling is good and normal or whatever, meanwhile ChromeOS literally just has trackpad scrolling solved so I had GPT cook up a fix for my own specific setup.
 
-
 From an average user's POV, scrolling on Chromium apps should literally just work especially on a laptop, "use a mouse 4head" or "learn to keyboard motions only 4head" is NOT an acceptable solution and the people who suggest this can suck my nuts
-
 
 This is an experimental KWin plugin. Select applications by clicking their windows, then set one scroll-speed factor for every selected application. The plugin does not affect unselected applications, mouse wheels, gestures, or pinch-to-zoom events.
 
 > **Warning:** KDE Scroll Fix runs inside the compositor. Read [Risks and rollback](#risks-and-rollback) before enabling it at startup.
+
+## Install the Arch Linux pre-release
+
+The `v0.1.0-alpha.1` prebuilt binary supports x86_64 Arch Linux with KWin 6.7.x. It was built and tested with KWin 6.7.4. Rebuild from source after a KWin upgrade if the plugin does not load.
+
+```sh
+curl -fsSL https://github.com/jaasonw/kde-scroll-fix/releases/download/v0.1.0-alpha.1/install-arch.sh | bash
+```
+
+The installer verifies the architecture, Arch Linux, and KWin 6.7.x before it installs the plugin system-wide and the settings application for your user.
+
+To update, rerun this command with the latest pre-release tag from the [releases page](https://github.com/jaasonw/kde-scroll-fix/releases).
 
 ## Before you begin
 
@@ -51,8 +60,8 @@ sudo apt install build-essential cmake extra-cmake-modules kwin-dev
 ```sh
 sudo apt install build-essential cmake extra-cmake-modules kwin-dev
 ```
-Ubuntu 24.04 LTS does not provide the required KWin 6.3 and KDE Frameworks 6 stack.
 
+Ubuntu 24.04 LTS does not provide the required KWin 6.3 and KDE Frameworks 6 stack.
 
 ## Install KDE Scroll Fix
 
