@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Touchpad Scroll Settings
+Comment=Adjusts scroll speed for apps that scroll too fast
+Exec=scroll-fix-settings
+Icon=input-touchpad
+Terminal=false
+Categories=Settings;HardwareSettings;
+Keywords=scroll;scrolling;touchpad;speed;fast;slow;sensitivity;chromium;chrome;brave;electron;discord;vscode;wayland;plasma;

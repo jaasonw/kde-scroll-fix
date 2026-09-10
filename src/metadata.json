@@ -1,0 +1,8 @@
+{
+    "KPlugin": {
+        "Name": "Scroll Fix",
+        "Description": "Slow down too-fast touchpad scrolling in Chromium, Electron and other Wayland apps",
+        "EnabledByDefault": false,
+        "License": "MIT"
+    }
+}
