@@ -66,7 +66,7 @@ echo "Open Touchpad Scroll Settings, or run scroll-fix-settings."
 INSTALLER
 chmod 755 "$stage_dir/install.sh"
 
-cat >"$dist_dir/install-arch.sh" <<INSTALLER
+cat >"$dist_dir/install-linux.sh" <<INSTALLER
 #!/usr/bin/env bash
 set -euo pipefail
 
@@ -81,7 +81,7 @@ curl --fail --location --proto '=https' --tlsv1.2 \\
 tar -xzf "\$tmp_dir/\$name.tar.gz" -C "\$tmp_dir"
 "\$tmp_dir/\$name/install.sh"
 INSTALLER
-chmod 755 "$dist_dir/install-arch.sh"
+chmod 755 "$dist_dir/install-linux.sh"
 
 tar -C "$dist_dir" -czf "$archive" "$name"
-printf 'Created:\n%s\n%s\n' "$archive" "$dist_dir/install-arch.sh"
+printf 'Created:\n%s\n%s\n' "$archive" "$dist_dir/install-linux.sh"

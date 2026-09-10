@@ -18,7 +18,7 @@ This is an experimental KWin plugin. Select applications by clicking their windo
 The prebuilt binary was built on x86_64 Arch Linux with KWin 6.7.x. It may work for other distros but I have only tested it on an Arch system
 
 ```sh
-curl -fsSL https://github.com/jaasonw/kde-scroll-fix/releases/download/v0.1.0-alpha.1/install-arch.sh | bash
+curl -fsSL https://github.com/jaasonw/kde-scroll-fix/releases/download/v0.1.0-alpha.1/install-linux.sh | bash
 ```
 
 ## Install (Build from source)
