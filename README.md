@@ -21,7 +21,7 @@ The prebuilt binary was built on x86_64 Arch Linux with KWin 6.7.x. It may work 
 curl -fsSL https://github.com/jaasonw/kde-scroll-fix/releases/download/v0.1.0-alpha.1/install-arch.sh | bash
 ```
 
-## Before you begin
+## Install (Build from source)
 
 You need the following:
 
