@@ -10,7 +10,8 @@ fail() {
 command -v kwin_wayland >/dev/null || fail "KWin is not installed."
 
 kwin_version=$(kwin_wayland --version | awk '{print $2}')
-[[ $kwin_version == 6.7.* ]] || fail "This release requires KWin 6.7.x; found ${kwin_version:-unknown}."
+[[ $kwin_version == 6.7.* ]] || fail "This prebuilt release requires KWin 6.7.x; found ${kwin_version:-unknown}.
+Build from source instead: https://github.com/jaasonw/kde-scroll-fix#install-build-from-source"
 
 root=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 artifact_dir=$root
@@ -19,7 +20,13 @@ for file in scrollfix.so scroll-fix-settings; do
     [[ -f "$artifact_dir/$file" ]] || fail "Missing build artifact: $artifact_dir/$file"
 done
 
-plugin_dirs=(/usr/lib/qt6/plugins /usr/lib64/qt6/plugins /usr/lib/qt/plugins)
+# Debian/Ubuntu use a multiarch libdir; Arch uses /usr/lib; Fedora/openSUSE use /usr/lib64.
+plugin_dirs=(
+    "/usr/lib/$(uname -m)-linux-gnu/qt6/plugins"
+    /usr/lib/qt6/plugins
+    /usr/lib64/qt6/plugins
+    /usr/lib/qt/plugins
+)
 if command -v qmake6 >/dev/null; then
     plugin_dirs=("$(qmake6 -query QT_INSTALL_PLUGINS)" "${plugin_dirs[@]}")
 elif command -v qtpaths6 >/dev/null; then

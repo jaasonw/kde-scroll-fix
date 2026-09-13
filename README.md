@@ -61,16 +61,32 @@ Run the following commands:
 ```sh
 cmake -S . -B build \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-  -DCMAKE_INSTALL_PREFIX=/usr \
-  -DKDE_INSTALL_PLUGINDIR=lib/qt6/plugins
+  -DCMAKE_INSTALL_PREFIX=/usr
 cmake --build build -j4
 ctest --test-dir build --output-on-failure
 ```
 
-The `lib/qt6/plugins` path is valid for Arch Linux. On other distributions, find the Qt 6 plugin path before you configure the project:
+`extra-cmake-modules` detects the correct Qt 6 plugin directory for your distribution, so do
+not set `KDE_INSTALL_PLUGINDIR` unless the detected path is wrong. The detected path differs
+per distribution, and installing to the wrong one produces a plugin that KWin silently never
+loads:
+
+| Distribution | Qt 6 plugin directory |
+| --- | --- |
+| Arch Linux | `/usr/lib/qt6/plugins` |
+| Debian / Ubuntu | `/usr/lib/<arch>-linux-gnu/qt6/plugins`, for example `/usr/lib/x86_64-linux-gnu/qt6/plugins` |
+| Fedora / openSUSE | `/usr/lib64/qt6/plugins` |
+
+To confirm the path that your system uses, run:
 
 ```sh
-qmake6 -query QT_INSTALL_PLUGINS
+qmake6 -query QT_INSTALL_PLUGINS   # or: qtpaths6 --plugin-dir
+```
+
+Check that the configured destination matches before you install:
+
+```sh
+grep scrollfix.so build/cmake_install.cmake
 ```
 
 ### Install the KWin plugin
@@ -84,10 +100,16 @@ cat build/install_manifest.txt
 sudo cmake --install build
 ```
 
-This command installs one file. It does not replace or modify a KWin binary:
+This command installs one file. It does not replace or modify a KWin binary. On Arch Linux:
 
 ```text
 /usr/lib/qt6/plugins/kwin/plugins/scrollfix.so
+```
+
+On Debian and Ubuntu:
+
+```text
+/usr/lib/x86_64-linux-gnu/qt6/plugins/kwin/plugins/scrollfix.so
 ```
 
 ### Install the settings application
