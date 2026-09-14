@@ -13,15 +13,11 @@ This is an experimental KWin plugin. Select applications by clicking their windo
 
 > **Warning:** KDE Scroll Fix runs inside the compositor. Read [Risks and rollback](#risks-and-rollback) before enabling it at startup.
 
-## Install (Pre built binary)
-
-The prebuilt binary was built on x86_64 Arch Linux with KWin 6.7.x. It may work for other distros but I have only tested it on an Arch system
-
-```sh
-curl -fsSL https://github.com/jaasonw/kde-scroll-fix/releases/download/v0.1.0-alpha.1/install.sh | bash
-```
-
 ## Install (Build from source)
+
+This is a KWin C++ plugin, and KWin's plugin ABI is not guaranteed to stay compatible from version to version.
+A binary built against one KWin release can fail to load, or worse, misbehave, against another. Because of that,
+there is no prebuilt binary — build against the KWin version actually installed on your system.
 
 You need the following:
 
